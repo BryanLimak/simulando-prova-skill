@@ -1,0 +1,48 @@
+{
+  "format": "classificados-prova/v1",
+  "prova": {
+    "title": "Frações · Ensino fundamental",
+    "description": "Prova de exemplo com um simulado curto.",
+    "category": "escolar",
+    "icon": "FRAC"
+  },
+  "simulados": [
+    {
+      "title": "Simulado 1 · Básico",
+      "pass_score": 60,
+      "time_limit_min": null,
+      "questions": [
+        {
+          "text": "Quanto é 1/2 + 1/4?",
+          "explanation": "Igualando os denominadores: 2/4 + 1/4 = 3/4.",
+          "alternatives": [
+            { "text": "3/4", "is_correct": true },
+            { "text": "2/6" },
+            { "text": "1/6" },
+            { "text": "2/4" }
+          ]
+        },
+        {
+          "text": "Qual fração é equivalente a 2/3?",
+          "explanation": "Multiplicando numerador e denominador por 2: 4/6.",
+          "alternatives": [
+            { "text": "3/2" },
+            { "text": "4/6", "is_correct": true },
+            { "text": "2/6" },
+            { "text": "6/4" }
+          ]
+        },
+        {
+          "text": "Quais frações representam a metade? (escolha todas)",
+          "explanation": "1/2, 2/4 e 5/10 são equivalentes a 0,5.",
+          "alternatives": [
+            { "text": "1/2", "is_correct": true },
+            { "text": "2/4", "is_correct": true },
+            { "text": "1/4" },
+            { "text": "5/10", "is_correct": true }
+          ]
+        }
+      ]
+    }
+  ]
+}

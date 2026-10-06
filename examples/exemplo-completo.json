@@ -1,0 +1,124 @@
+{
+  "format": "classificados-prova/v1",
+  "prova": {
+    "title": "Lógica de programação",
+    "description": "Prova introdutória em três etapas: variáveis e operadores, condicionais e repetição, funções e coleções. Dificuldade crescente.",
+    "category": "programacao",
+    "icon": "LOG"
+  },
+  "simulados": [
+    {
+      "title": "Simulado 1 · Variáveis e operadores",
+      "description": "Conceitos básicos. Sem limite de tempo.",
+      "pass_score": 70,
+      "time_limit_min": null,
+      "questions": [
+        {
+          "text": "Qual é o valor de x depois de executar:\n\nx = 7\nx = x % 3",
+          "explanation": "O operador % devolve o resto da divisão inteira: 7 dividido por 3 dá 2 com resto 1.",
+          "alternatives": [
+            { "text": "1", "is_correct": true },
+            { "text": "2" },
+            { "text": "3" },
+            { "text": "7" }
+          ]
+        },
+        {
+          "text": "Em uma linguagem com tipagem dinâmica, o que acontece ao executar nome = 42 depois de nome = \"Ana\"?",
+          "explanation": "Com tipagem dinâmica a variável passa a referenciar um número; o tipo acompanha o valor, não a variável.",
+          "alternatives": [
+            { "text": "Erro de compilação, porque o tipo da variável é fixo" },
+            { "text": "A variável passa a guardar o número 42", "is_correct": true },
+            { "text": "O número é convertido para o texto \"42\" automaticamente" },
+            { "text": "As duas atribuições são mantidas em uma lista" }
+          ]
+        },
+        {
+          "text": "Quais expressões resultam em verdadeiro? (escolha todas)",
+          "explanation": "5 > 3 é verdadeiro; 2 == 2.0 compara valores numéricos iguais; \"a\" < \"b\" compara pela ordem alfabética; 10 / 4 == 2 é falso porque a divisão dá 2.5.",
+          "alternatives": [
+            { "text": "5 > 3", "is_correct": true },
+            { "text": "2 == 2.0", "is_correct": true },
+            { "text": "\"a\" < \"b\"", "is_correct": true },
+            { "text": "10 / 4 == 2" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Simulado 2 · Condicionais e repetição",
+      "pass_score": 70,
+      "time_limit_min": 20,
+      "questions": [
+        {
+          "text": "Quantas vezes a mensagem é exibida?\n\nfor i in range(1, 4):\n    print(\"oi\")",
+          "explanation": "range(1, 4) gera 1, 2 e 3: três iterações.",
+          "alternatives": [
+            { "text": "3", "is_correct": true },
+            { "text": "4" },
+            { "text": "1" },
+            { "text": "Nenhuma: o laço não começa em zero" }
+          ]
+        },
+        {
+          "text": "Qual estrutura é a mais adequada quando não se sabe de antemão quantas repetições serão necessárias?",
+          "explanation": "O while repete enquanto uma condição for verdadeira, sem depender de uma contagem conhecida.",
+          "alternatives": [
+            { "text": "for com contador" },
+            { "text": "while", "is_correct": true },
+            { "text": "if/else encadeado" },
+            { "text": "switch/case" }
+          ]
+        },
+        {
+          "text": "O que a palavra-chave break faz dentro de um laço?",
+          "explanation": "break encerra o laço imediatamente; continue, por outro lado, pula só a iteração atual.",
+          "alternatives": [
+            { "text": "Pula para a próxima iteração" },
+            { "text": "Reinicia o contador" },
+            { "text": "Encerra o laço imediatamente", "is_correct": true },
+            { "text": "Pausa a execução até uma tecla ser pressionada" }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Simulado 3 · Funções e coleções",
+      "description": "Etapa mais exigente.",
+      "pass_score": 75,
+      "time_limit_min": 25,
+      "questions": [
+        {
+          "text": "Qual é a saída do código?\n\ndef dobro(n):\n    return n * 2\n\nprint(dobro(dobro(3)))",
+          "explanation": "dobro(3) devolve 6 e dobro(6) devolve 12.",
+          "alternatives": [
+            { "text": "6" },
+            { "text": "9" },
+            { "text": "12", "is_correct": true },
+            { "text": "Erro: função chamada dentro de si mesma" }
+          ]
+        },
+        {
+          "text": "Qual coleção é a mais indicada para guardar pares nome → telefone com busca rápida pelo nome?",
+          "explanation": "Dicionários (mapas) associam chaves a valores e localizam uma chave em tempo praticamente constante.",
+          "alternatives": [
+            { "text": "Lista de textos" },
+            { "text": "Dicionário (mapa)", "is_correct": true },
+            { "text": "Pilha" },
+            { "text": "Fila" }
+          ]
+        },
+        {
+          "text": "Sobre uma função pura, quais afirmações estão corretas? (escolha todas)",
+          "explanation": "Função pura depende só dos argumentos e sempre devolve o mesmo resultado para as mesmas entradas, sem efeitos colaterais; ela pode, sim, chamar outras funções puras.",
+          "alternatives": [
+            { "text": "Não altera variáveis fora dela", "is_correct": true },
+            { "text": "Devolve sempre o mesmo resultado para os mesmos argumentos", "is_correct": true },
+            { "text": "Não pode chamar nenhuma outra função" },
+            { "text": "Precisa gravar o resultado em arquivo" }
+          ]
+        }
+      ]
+    }
+  ]
+}
