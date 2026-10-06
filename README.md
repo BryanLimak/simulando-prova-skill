@@ -1,6 +1,6 @@
-# classificados-prova-skill
+# simulando-prova-skill
 
-Skill (conjunto de instruções) para qualquer assistente de IA gerar o **JSON de uma prova** no molde `classificados-prova/v1`, pronto para importar na plataforma **Classificados**.
+Skill (conjunto de instruções) para qualquer assistente de IA gerar o **JSON de uma prova** no molde `simulando-prova/v1`, pronto para importar na plataforma **Classificados**.
 
 Uma prova é um agrupador com **N simulados**. Cada simulado tem suas questões de múltipla escolha, nota mínima e tempo limite. Com a skill instalada, basta pedir:
 
@@ -22,7 +22,7 @@ Uma prova é um agrupador com **N simulados**. Cada simulado tem suas questões 
 A skill é texto. Qualquer assistente que aceite instruções consegue usá-la. Escolha o jeito que o seu assistente oferece:
 
 1. **Instruções fixas / "instruções personalizadas" / "projeto" / "GPT personalizado"**: copie o conteúdo de `SKILL.md` e cole no campo de instruções. A partir daí, todo pedido de prova sai no molde certo.
-2. **Pasta de skills** (assistentes que carregam skills de uma pasta, como o Claude Code e o Claude.ai): baixe este repositório (botão *Code → Download ZIP* ou `git clone`) e coloque a pasta `classificados-prova-skill` na pasta de skills do assistente, por exemplo `~/.claude/skills/classificados-prova`. O arquivo `SKILL.md` tem o cabeçalho que esses assistentes esperam (`name` e `description`).
+2. **Pasta de skills** (assistentes que carregam skills de uma pasta, como o Claude Code e o Claude.ai): baixe este repositório (botão *Code → Download ZIP* ou `git clone`) e coloque a pasta `simulando-prova-skill` na pasta de skills do assistente, por exemplo `~/.claude/skills/simulando-prova`. O arquivo `SKILL.md` tem o cabeçalho que esses assistentes esperam (`name` e `description`).
 3. **Uma conversa só**: cole o `SKILL.md` como primeira mensagem e, em seguida, faça o pedido. Funciona em qualquer chat, inclusive os gratuitos.
 4. **Agentes com acesso a arquivos**: aponte o agente para a URL deste repositório e peça "leia o SKILL.md e siga a skill".
 
@@ -41,7 +41,7 @@ Se o assistente não perguntar nada, ele usa o padrão: 3 simulados de 20 quest�
 
 ```json
 {
-  "format": "classificados-prova/v1",
+  "format": "simulando-prova/v1",
   "prova": { "title": "Título da prova", "description": "Opcional", "category": "certificacoes", "icon": "ABC" },
   "simulados": [
     {
@@ -65,7 +65,7 @@ Se o assistente não perguntar nada, ele usa o padrão: 3 simulados de 20 quest�
 }
 ```
 
-Regras principais: 1 a 50 simulados; 1 a 1000 questões por simulado; 2 a 8 alternativas por questão; pelo menos uma correta (mais de uma vira questão de múltiplas respostas). Categorias aceitas: `tecnologia`, `programacao`, `certificacoes`, `idiomas`, `concursos`, `vestibular`, `escolar`, `negocios`, `saude`, `direito`, `exatas`, `humanas`, `ciencias`, `outros`. A tabela completa de campos está em `SKILL.md`.
+O nome antigo do formato, `classificados-prova/v1`, continua aceito. Regras principais: 1 a 50 simulados; 1 a 1000 questões por simulado; 2 a 8 alternativas por questão; pelo menos uma correta (mais de uma vira questão de múltiplas respostas). Categorias aceitas: `tecnologia`, `programacao`, `certificacoes`, `idiomas`, `concursos`, `vestibular`, `escolar`, `negocios`, `saude`, `direito`, `exatas`, `humanas`, `ciencias`, `outros`. A tabela completa de campos está em `SKILL.md`.
 
 ## Validar um arquivo
 

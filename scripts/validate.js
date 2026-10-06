@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Valida um JSON no molde classificados-prova/v1 sem dependências.
+ * Valida um JSON no molde simulando-prova/v1 sem dependências.
  *   node scripts/validate.js prova.json
  * Sai com código 1 se houver erros. Também aceita a exportação de um simulado
  * ({"questions": [...]}) e uma lista de simulados, como a plataforma.
@@ -22,7 +22,7 @@ const isStr = (v) => typeof v === 'string';
 
 let simulados;
 if (data && Array.isArray(data.simulados)) {
-  if (data.format !== 'classificados-prova/v1') err('format', `esperado "classificados-prova/v1", veio ${JSON.stringify(data.format)}`);
+  if (!['simulando-prova/v1', 'classificados-prova/v1'].includes(data.format)) err('format', `esperado "simulando-prova/v1", veio ${JSON.stringify(data.format)}`);
   const p = data.prova || {};
   if (p.title !== undefined && (!isStr(p.title) || p.title.trim().length < 2 || p.title.length > 160)) err('prova.title', 'use 2 a 160 caracteres');
   if (p.title === undefined) warn('prova.title', 'sem título: a plataforma usa o título do primeiro simulado');

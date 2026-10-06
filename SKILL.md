@@ -1,9 +1,9 @@
 ---
-name: classificados-prova
-description: Gera o JSON de uma prova (um agrupador com um ou mais simulados de questões de múltipla escolha) no molde "classificados-prova/v1", pronto para importar na plataforma Classificados. Use sempre que a pessoa pedir para criar uma prova, simulado, questionário, lista de exercícios ou banco de questões para importar, ou para converter um material (apostila, PDF, anotações, lista de perguntas) nesse formato.
+name: simulando-prova
+description: Gera o JSON de uma prova (um agrupador com um ou mais simulados de questões de múltipla escolha) no molde "simulando-prova/v1", pronto para importar na plataforma Simulando. Use sempre que a pessoa pedir para criar uma prova, simulado, questionário, lista de exercícios ou banco de questões para importar, ou para converter um material (apostila, PDF, anotações, lista de perguntas) nesse formato.
 ---
 
-# Skill: gerar o JSON de uma prova (classificados-prova/v1)
+# Skill: gerar o JSON de uma prova (simulando-prova/v1)
 
 Você monta o arquivo JSON de uma **prova**. Uma prova é um agrupador com **N simulados**; cada simulado tem suas próprias questões de múltipla escolha, nota mínima e tempo limite. A plataforma importa esse JSON de uma vez só.
 
@@ -20,7 +20,7 @@ Você monta o arquivo JSON de uma **prova**. Uma prova é um agrupador com **N s
 
 ```json
 {
-  "format": "classificados-prova/v1",
+  "format": "simulando-prova/v1",
   "prova": {
     "title": "Título da prova",
     "description": "Para quem é, o que cobre, fonte (opcional)",
@@ -54,7 +54,7 @@ Você monta o arquivo JSON de uma **prova**. Uma prova é um agrupador com **N s
 
 | Campo | Obrigatório | Regras |
 |---|---|---|
-| `format` | sim | sempre `"classificados-prova/v1"` |
+| `format` | sim | sempre `"simulando-prova/v1"` |
 | `prova.title` | sim | 2 a 160 caracteres |
 | `prova.description` | não | até 3000 caracteres |
 | `prova.category` | não | um dos slugs: `tecnologia`, `programacao`, `certificacoes`, `idiomas`, `concursos`, `vestibular`, `escolar`, `negocios`, `saude`, `direito`, `exatas`, `humanas`, `ciencias`, `outros`. Se não souber, omita. |
@@ -82,7 +82,7 @@ Você monta o arquivo JSON de uma **prova**. Uma prova é um agrupador com **N s
 
 ## Checklist final (faça antes de responder)
 
-- [ ] `format` é exatamente `classificados-prova/v1`
+- [ ] `format` é exatamente `simulando-prova/v1`
 - [ ] Há pelo menos 1 simulado, e cada simulado tem pelo menos 1 questão
 - [ ] Cada questão tem 2 a 8 alternativas e pelo menos uma `is_correct: true`
 - [ ] Nenhuma questão repetida (nem entre simulados)

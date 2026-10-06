@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/BryanLimak/classificados-prova-skill/schema/prova.schema.json",
-  "title": "Prova (classificados-prova/v1)",
+  "$id": "https://github.com/BryanLimak/simulando-prova-skill/schema/prova.schema.json",
+  "title": "Prova (simulando-prova/v1)",
   "description": "Uma prova (agrupador) com um ou mais simulados de questões de múltipla escolha.",
   "type": "object",
   "required": ["format", "simulados"],
   "additionalProperties": false,
   "properties": {
-    "format": { "const": "classificados-prova/v1" },
+    "format": { "enum": ["simulando-prova/v1", "classificados-prova/v1"] },
     "exported_at": { "type": "string" },
     "prova": {
       "type": "object",

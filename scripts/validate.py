@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Valida um JSON no molde classificados-prova/v1 sem dependências.
+"""Valida um JSON no molde simulando-prova/v1 sem dependências.
 
     python scripts/validate.py prova.json
 
@@ -29,8 +29,8 @@ def main() -> int:
     warn = lambda path, msg: warnings.append(f'{path}: {msg}')  # noqa: E731
 
     if isinstance(data, dict) and isinstance(data.get('simulados'), list):
-        if data.get('format') != 'classificados-prova/v1':
-            err('format', f'esperado "classificados-prova/v1", veio {data.get("format")!r}')
+        if data.get('format') not in ('simulando-prova/v1', 'classificados-prova/v1'):
+            err('format', f'esperado "simulando-prova/v1", veio {data.get("format")!r}')
         p = data.get('prova') or {}
         if 'title' in p and (not isinstance(p['title'], str) or not 2 <= len(p['title'].strip()) <= 160):
             err('prova.title', 'use 2 a 160 caracteres')

@@ -1,5 +1,5 @@
 {
-  "format": "classificados-prova/v1",
+  "format": "simulando-prova/v1",
   "prova": {
     "title": "Lógica de programação",
     "description": "Prova introdutória em três etapas: variáveis e operadores, condicionais e repetição, funções e coleções. Dificuldade crescente.",
