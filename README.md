@@ -44,6 +44,7 @@ Se o assistente não perguntar nada, ele usa o padrão: 3 simulados de 20 quest�
 ## Duas regras importantes
 
 - **O gabarito do material nunca é corrigido.** Ao converter apostila, PDF ou lista com respostas, a alternativa correta é a que a fonte indica, mesmo que o assistente discorde, e as alternativas ficam na ordem da fonte. Se a fonte não traz a resposta de alguma questão, o assistente responde e avisa quais foram respondidas por ele.
+- **Respostas faltando no material são avisadas, não inventadas.** Se o enunciado pede 3 ou 4 respostas ("Choose 3 answers", "Escolha 4", "Which two…") e o material marca outro número de corretas, o assistente mantém as corretas da fonte e, depois do JSON, mostra um alerta com a lista dessas questões para você revisar.
 - **Explicações citam alternativas como `{{B}}`.** A letra se refere à ordem no arquivo; na plataforma, cada `{{B}}` vira a letra com que aquela alternativa aparece para a pessoa, mesmo com as alternativas embaralhadas.
 
 ## O molde, em resumo
@@ -84,7 +85,7 @@ node scripts/validate.js minha-prova.json
 python scripts/validate.py minha-prova.json
 ```
 
-O validador mostra um resumo (simulados, questões, alternativas, corretas) e lista os problemas com a posição exata. Ele também acusa `{{E}}` numa questão de 4 alternativas e avisa quando a explicação cita letras sem chaves ou quando uma alternativa cita outras ("A e B", "todas as anteriores").
+O validador mostra um resumo (simulados, questões, alternativas, corretas) e lista os problemas com a posição exata. Ele também acusa `{{E}}` numa questão de 4 alternativas e avisa quando a explicação cita letras sem chaves ou quando uma alternativa cita outras ("A e B", "todas as anteriores"). No fim, lista num bloco ⚠️ as questões em que o número de respostas pedido no enunciado ("Choose 3 answers", "(Choose two.)", "Escolha 4", "Which three…", "Quais duas…") não bate com o número de alternativas marcadas como corretas.
 
 ## Licença
 

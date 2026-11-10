@@ -25,6 +25,32 @@ const PLAIN_REF_RE = /(?:[Aa]lternativas?|[Ll]etras?|[Oo]p[çc](?:ão|ões)|[Oo]
 const CITES_OTHER_RE = /(?:^|[^\p{L}\p{N}_])[A-H]\s+(?:e|and|ou|or)\s+[A-H](?![\p{L}\p{N}_])/u;
 const ABOVE_RE = /\b(?:todas|nenhuma)\s+(?:as|das)\s+(?:anteriores|acima)\b|\b(?:all|none)\s+of\s+the\s+above\b/i;
 
+// Quantas respostas o enunciado pede: "(Choose two.)", "Choose 3 answers", "Escolha 4", "Which three...", "Quais duas..."
+const NUMBERS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, um: 1, uma: 1, dois: 2, duas: 2, 'três': 3, tres: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, dos: 2, cuatro: 4 };
+const NUM = '([1-8]|' + Object.keys(NUMBERS).sort((a, b) => b.length - a.length).join('|') + ')';
+// \b do JS não entende acentos; usamos limites com \p{L}
+const B = '(?<![\\p{L}\\p{N}_])';
+const E = '(?![\\p{L}\\p{N}_])';
+const ASK_VERB_RE = new RegExp(B + '(?:choose|select|pick|mark|escolha|selecione|marque|assinale|elija|seleccione|escoja)\\s+(?:exactly\\s+|exatamente\\s+|the\\s+)?' + NUM + E +
+  '(?:\\s+(?:correct\\s+|corretas?\\s+)?(?:answers?|options?|responses?|choices?|respostas?|alternativas?|op[çc](?:ões|ão)|opciones))?\\s*(?:[.):\\]]|$)', 'gimu');
+const COMBINED_RE = /,|\s(?:and|e|y|&)\s/i;
+const ASK_WHICH_RE = new RegExp(B + '(?:which|what)\\s+(?:are\\s+(?:the\\s+)?)?' + NUM + E + '|' + B + 'quais\\s+(?:são\\s+(?:as\\s+|os\\s+)?)?' + NUM + E, 'iu');
+function askedAnswers(text, alts) {
+  if (!isStr(text)) return null;
+  const found = [...text.matchAll(ASK_VERB_RE)].map((m) => m[1]);
+  let word;
+  if (found.length) word = found[found.length - 1];
+  else {
+    const m = text.match(ASK_WHICH_RE);
+    word = m ? (m[1] || m[2]) : null;
+    if (!word || ['one', 'um', 'uma', '1'].includes(word.toLowerCase())) return null;
+    // "Which two types...?" com alternativas que já trazem os itens juntos ("X and Y") é resposta única
+    const texts = alts.filter((a) => a && typeof a === 'object').map((a) => a.text);
+    if (texts.length && texts.every((t) => isStr(t) && COMBINED_RE.test(t))) return null;
+  }
+  return /^\d$/.test(word) ? Number(word) : NUMBERS[word.toLowerCase()];
+}
+
 let simulados;
 if (data && Array.isArray(data.simulados)) {
   if (!['simulando-prova/v1', 'classificados-prova/v1'].includes(data.format)) err('format', `esperado "simulando-prova/v1", veio ${JSON.stringify(data.format)}`);
@@ -52,6 +78,7 @@ const seenTexts = new Map();
 let totalQ = 0;
 let multi = 0;
 const correctPositions = {};
+const gaps = [];
 simulados.forEach((sim, si) => {
   const sp = `simulados[${si}]`;
   if (!sim || typeof sim !== 'object') { err(sp, 'não é um objeto'); return; }
@@ -85,6 +112,13 @@ simulados.forEach((sim, si) => {
     if (correct === 0) err(`${qp}.alternatives`, 'nenhuma alternativa marcada com "is_correct": true');
     if (correct > 1) multi++;
     const n = q.alternatives.length;
+    const asked = askedAnswers(q.text, q.alternatives);
+    if (asked !== null && (asked !== correct || asked > n)) {
+      const where = `Simulado ${si + 1}, questão ${qi + 1}`;
+      gaps.push(asked > n
+        ? `${where}: pede ${asked}, mas a questão tem só ${n} alternativa(s) (${correct} marcada(s) como correta(s))`
+        : `${where}: pede ${asked}, a fonte marca ${correct}`);
+    }
     if (isStr(q.explanation)) {
       for (const m of q.explanation.matchAll(TOKEN_RE)) {
         const i = m[1].toUpperCase().charCodeAt(0) - 65;
@@ -110,5 +144,10 @@ console.log(`Simulados: ${simulados.length} · Questões: ${totalQ} · Com mais 
 simulados.forEach((sim, si) => { if (sim && Array.isArray(sim.questions)) console.log(`  ${si + 1}. ${sim.title || '(sem título)'} — ${sim.questions.length} questão(ões)${sim.time_limit_min ? `, ${sim.time_limit_min} min` : ''}${sim.pass_score ? `, mínimo ${sim.pass_score}%` : ''}`); });
 warnings.forEach((w) => console.log('  aviso: ' + w));
 errors.forEach((e) => console.log('  ERRO: ' + e));
+if (gaps.length) {
+  console.log(`\n⚠️  ${gaps.length} questão(ões) em que o número de respostas pedido no enunciado não bate com as corretas.`);
+  console.log('    Não complete nem remova corretas por conta própria: revise no material original.');
+  gaps.forEach((g) => console.log('  - ' + g));
+}
 console.log(errors.length ? `\n${errors.length} erro(s): corrija antes de importar.` : '\nOK: pronto para importar.');
 process.exit(errors.length ? 1 : 0);

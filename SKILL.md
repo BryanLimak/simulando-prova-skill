@@ -5,7 +5,7 @@ description: Gera o JSON de uma prova (um agrupador com um ou mais simulados de 
 
 # Skill: gerar o JSON de uma prova (simulando-prova/v1)
 
-**Versão da skill: 2026-10-19**
+**Versão da skill: 2026-11-10**
 
 Você monta o arquivo JSON de uma **prova**. Uma prova é um agrupador com **N simulados**; cada simulado tem suas próprias questões de múltipla escolha, nota mínima e tempo limite. A plataforma importa esse JSON de uma vez só.
 
@@ -26,7 +26,7 @@ Toda vez que for usar esta skill, antes de escrever qualquer questão:
    - Se a pessoa só disse "crie uma prova de X", use o padrão: **3 simulados de 20 questões**, 4 alternativas, uma correta, dificuldade crescente entre os simulados.
 2. **Escreva as questões** com qualidade de prova real: enunciado claro e autossuficiente, alternativas plausíveis e do mesmo tamanho, distratores que testam erros comuns, sem "todas as anteriores" ou "nenhuma das anteriores", sem pistas gramaticais, sem repetir questões entre simulados. Varie a posição da alternativa correta (só nas questões que você escreve; questões vindas de um material mantêm a ordem dele).
 3. **Explique cada resposta** no campo `explanation` (1 a 3 frases dizendo por que a correta está certa e, quando ajudar, por que a mais tentadora está errada). Para citar uma alternativa, use a letra entre chaves, como `{{B}}` (veja "Citar alternativas na explicação").
-4. **Entregue só o JSON** (em um bloco de código `json` ou como arquivo `.json`). Nada de texto antes ou depois, nem comentários dentro do JSON. As únicas exceções são as linhas de aviso descritas abaixo (versão nova da skill e questões sem gabarito na fonte).
+4. **Entregue só o JSON** (em um bloco de código `json` ou como arquivo `.json`). Nada de texto antes ou depois, nem comentários dentro do JSON. As únicas exceções são as linhas de aviso descritas abaixo (versão nova da skill e questões sem gabarito na fonte, antes do JSON; alerta de respostas faltando no material, depois do JSON).
 5. **Revise antes de entregar** usando o checklist no fim.
 
 ## Gabarito: nunca corrija
@@ -39,6 +39,28 @@ Quando a resposta certa já vem definida (gabarito de apostila, PDF ou prova ant
 - Só quando a fonte não traz a resposta de uma questão você define a correta; nesse caso, diga numa linha antes do JSON quais questões foram respondidas por você (ex.: *"Sem gabarito na fonte, respondidas por mim: simulado 1, questões 3, 7 e 12."*).
 
 Essa regra vale para o material da pessoa. Nas questões que você mesmo escreve, a resposta certa é responsabilidade sua: confira cada uma.
+
+Se o material diz como o gabarito está marcado, siga essa marcação. Por exemplo, PDFs que avisam *"Answers Highlighted in Red"* têm como gabarito o texto em vermelho, mesmo quando também trazem ✓ ou outras marcas (que costumam estar incompletas ou em conflito).
+
+## Confira quantas respostas o enunciado pede
+
+Muitos enunciados dizem quantas alternativas a pessoa deve marcar: *"Choose 3 answers"*, *"(Choose two.)"*, *"Select 2"*, *"Which three…"*, *"Escolha 4"*, *"Marque duas"*, *"Quais duas…"*. Em material extraído (PDF, apostila, dump), às vezes o gabarito traz menos (ou mais) corretas do que o enunciado pede: falta a marcação de uma, duas alternativas se fundiram, uma se perdeu na quebra de página.
+
+Para cada questão vinda de um material:
+
+1. Leia no enunciado quantas respostas ele pede (número em algarismo ou por extenso, em qualquer idioma). Se não diz, não há o que conferir.
+2. Conte quantas alternativas o gabarito da fonte marca como corretas.
+3. Se os números forem diferentes, **não complete nem remova corretas por conta própria** (vale a seção "Gabarito: nunca corrija"). Gere a questão com exatamente as corretas que a fonte marca e **anote a divergência**. Não altere o enunciado.
+4. Se faltam alternativas (o enunciado pede 4 e a questão tem só 3 alternativas no total), anote também: provavelmente alternativas se fundiram ou se perderam na extração.
+
+Depois do JSON, se houve alguma divergência, termine a resposta com um alerta (e só nesse caso):
+
+> ⚠️ **Questões com respostas faltando no material** (o enunciado pede N, a fonte marca M). Revise no material original antes de usar:
+> - Simulado 1, questão 12: pede 3, a fonte marca 2.
+> - Simulado 2, questão 4: pede 2, a fonte marca 3.
+> - Simulado 3, questão 9: pede 4, a questão tem só 3 alternativas.
+
+Os validadores (`scripts/validate.py` e `scripts/validate.js`) fazem a mesma conferência a partir do texto do enunciado e listam essas questões num bloco próprio no fim; rode um deles quando puder e use a lista deles para conferir o alerta. Nas questões que você mesmo escreve, faça o enunciado e o número de corretas baterem.
 
 ## Citar alternativas na explicação
 
@@ -126,10 +148,11 @@ Exemplo:
 - [ ] Há pelo menos 1 simulado, e cada simulado tem pelo menos 1 questão
 - [ ] Cada questão tem 2 a 8 alternativas e pelo menos uma `is_correct: true`
 - [ ] Questões de um material: as corretas são exatamente as do gabarito da fonte, e as alternativas estão na ordem da fonte
+- [ ] Conferi, em cada questão, se o número de respostas que o enunciado pede bate com o número de corretas; as que não batem estão no alerta depois do JSON (sem inventar nem remover corretas)
 - [ ] Nenhuma explicação contradiz a alternativa marcada como correta
 - [ ] As explicações citam alternativas só como `{{A}}`, `{{B}}`… e só com letras que existem na questão
 - [ ] Nenhuma alternativa cita outra pela letra
 - [ ] Nenhuma questão repetida (nem entre simulados)
 - [ ] Nas questões que eu escrevi, as corretas não estão sempre na mesma posição
 - [ ] O JSON é válido (aspas duplas, sem vírgula sobrando, sem comentários)
-- [ ] A resposta contém apenas o JSON (e, se for o caso, as linhas de aviso de versão nova ou de questões que respondi por falta de gabarito)
+- [ ] A resposta contém apenas o JSON (e, se for o caso, as linhas de aviso de versão nova ou de questões que respondi por falta de gabarito antes dele, e o alerta de respostas faltando no material depois dele)
