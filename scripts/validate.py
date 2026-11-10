@@ -18,6 +18,39 @@ PLAIN_REF_RE = re.compile(r'(?:[Aa]lternativas?|[Ll]etras?|[Oo]p[çc](?:ão|ões
 CITES_OTHER_RE = re.compile(r'(?<!\w)[A-H]\s+(?:e|and|ou|or)\s+[A-H](?!\w)')
 ABOVE_RE = re.compile(r'\b(?:todas|nenhuma)\s+(?:as|das)\s+(?:anteriores|acima)\b|\b(?:all|none)\s+of\s+the\s+above\b', re.I)
 
+# Quantas respostas o enunciado pede: "(Choose two.)", "Choose 3 answers", "Escolha 4", "Which three...", "Quais duas..."
+NUMBERS = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7, 'eight': 8,
+           'um': 1, 'uma': 1, 'dois': 2, 'duas': 2, 'três': 3, 'tres': 3, 'quatro': 4, 'cinco': 5, 'seis': 6,
+           'sete': 7, 'oito': 8, 'dos': 2, 'cuatro': 4}
+NUM = r'([1-8]|' + '|'.join(sorted(NUMBERS, key=len, reverse=True)) + r')'
+ASK_VERB_RE = re.compile(
+    r'\b(?:choose|select|pick|mark|escolha|selecione|marque|assinale|elija|seleccione|escoja)\s+'
+    r'(?:exactly\s+|exatamente\s+|the\s+)?' + NUM +
+    r'(?:\s+(?:correct\s+|corretas?\s+)?(?:answers?|options?|responses?|choices?|respostas?|alternativas?|op[çc](?:ões|ão)|opciones))?'
+    r'\s*(?:[.):\]]|$)', re.I | re.M)
+COMBINED_RE = re.compile(r',|\s(?:and|e|y|&)\s', re.I)
+ASK_WHICH_RE = re.compile(
+    r'\b(?:which|what)\s+(?:are\s+(?:the\s+)?)?' + NUM + r'\b|\bquais\s+(?:são\s+(?:as\s+|os\s+)?)?' + NUM + r'\b', re.I)
+
+
+def asked_answers(text, alts):
+    """Número de respostas que o enunciado pede, ou None se ele não diz."""
+    if not isinstance(text, str):
+        return None
+    found = [m.group(1) for m in ASK_VERB_RE.finditer(text)]
+    if found:
+        word = found[-1]
+    else:
+        m = ASK_WHICH_RE.search(text)
+        word = (m.group(1) or m.group(2)) if m else None
+        if word is None or word.lower() in ('one', 'um', 'uma', '1'):
+            return None
+        # "Which two types...?" com alternativas que já trazem os itens juntos ("X and Y") é resposta única
+        texts = [a.get('text') for a in alts if isinstance(a, dict)]
+        if texts and all(isinstance(t, str) and COMBINED_RE.search(t) for t in texts):
+            return None
+    return int(word) if word.isdigit() else NUMBERS[word.lower()]
+
 
 def main() -> int:
     if len(sys.argv) < 2:
@@ -64,6 +97,7 @@ def main() -> int:
         err('simulados', 'máximo de 50 simulados')
 
     seen, total, multi, positions = {}, 0, 0, {}
+    gaps = []
     for si, sim in enumerate(simulados):
         sp = f'simulados[{si}]'
         if not isinstance(sim, dict):
@@ -126,6 +160,13 @@ def main() -> int:
             if correct > 1:
                 multi += 1
             n = len(alts)
+            asked = asked_answers(text, alts)
+            if asked is not None and (asked != correct or asked > n):
+                where = f'Simulado {si + 1}, questão {qi + 1}'
+                if asked > n:
+                    gaps.append(f'{where}: pede {asked}, mas a questão tem só {n} alternativa(s) ({correct} marcada(s) como correta(s))')
+                else:
+                    gaps.append(f'{where}: pede {asked}, a fonte marca {correct}')
             expl = q.get('explanation')
             if isinstance(expl, str):
                 for m in TOKEN_RE.finditer(expl):
@@ -155,6 +196,11 @@ def main() -> int:
         print('  aviso: ' + w)
     for e in errors:
         print('  ERRO: ' + e)
+    if gaps:
+        print(f'\n⚠️  {len(gaps)} questão(ões) em que o número de respostas pedido no enunciado não bate com as corretas.')
+        print('    Não complete nem remova corretas por conta própria: revise no material original.')
+        for g in gaps:
+            print('  - ' + g)
     print(f'\n{len(errors)} erro(s): corrija antes de importar.' if errors else '\nOK: pronto para importar.')
     return 1 if errors else 0
 
